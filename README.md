@@ -6,17 +6,19 @@
 [![David](https://img.shields.io/david/dev/idleberg/Bootstrap-Listr.svg?style=flat-square)](https://david-dm.org/idleberg/Bootstrap-Listr#info=devDependencies)
 [![Gitter](https://img.shields.io/badge/chat-Gitter-ff69b4.svg?style=flat-square)](https://gitter.im/idleberg/Bootstrap-Listr)
 
-A replacement for default server indices, Bootstrap Listr beautifully displays folders and files in the browser. It is built upon the [Bootstrap](http://getbootstrap.com) framework and optionally makes use of [Bootswatch](http://bootswatch.com/) themes and [Font Awesome](http://fortawesome.github.io/Font-Awesome/) icons.
+A stylish replacement for default web server indexes, Bootstrap Listr beautifully displays folders and files in the browser. It is built upon the [Bootstrap](http://getbootstrap.com) web framework and optionally makes use of [Bootswatch](http://bootswatch.com/) themes and [Font Awesome](http://fortawesome.github.io/Font-Awesome/) icons.
+
+Bootstrap Listr was originally built for Apache web server using .htaccess files. To enjoy Bootstrap Listr's full functionalities under [Nginx](https://www.nginx.com/) servers, look at the [Nginx](#nginx) config section below.
 
 *Watch a [live demo](http://demo.idleberg.com/Bootstrap-Listr-2/)!*
 
-## Installation
+## Get Bootstrap Listr!
 
-Download the [latest release](https://github.com/idleberg/Bootstrap-Listr/releases) or clone the repository.
+Download the [latest release](https://github.com/idleberg/Bootstrap-Listr/releases) or clone/fork the repository.
 
 ## Usage
 
-The simplest way is to use the default configuration. Copy the `dist`-folder to your webserver, then place all files that should be accessible in the browser go into the `_public` folder. Point your browser to the `dist`-folder rather than the files and folder inside `_public`.
+Once deployed, simply point your browser to the location where you installed Bootstrap Listr. Refer to [Deployment](#deployment) section for detailed server deployment/installation instructions.
 
 ## Building
 
@@ -30,11 +32,50 @@ Please visit the [project wiki](https://github.com/idleberg/Bootstrap-Listr/wiki
 
 ### CDN
 
-Instead of running your dependencies locally, you can make use of various content delivery networks (CDN). Initialize your application using `gulp init` and set `dependencies` to `cdn` in your `config.json`. You can then specify your preferred CDNs (and all other preferences) in this file as well (see [below](#options) for details!)
+Instead of running your dependencies locally, you can make use of various content delivery networks (CDN). Initialize your application using `gulp init` and set `dependencies` to `cdn` in your `config.json`. You can then specify your preferred CDNs (and all other preferences) in this file as well (see [below](#options) for configuration options)
 
 ## Deployment
 
-Deploy `dist/` to your server, if necessary rename `config.json-example` to `config.json`. All files that should be accessible in the browser go into the `_public` folder (you can change the folder in the config). Depending on your Apache settings, you might have to uncomment the `RewriteBase` setting in the `.htaccess` file (maybe add parent folder name after the slash.)
+The simplest way is to use the default configuration. Alternatively, it is possible to modify some configuration by editing the `config.json` file located at the root of the repository. Configuration file can be modified at anytime once Bootstrap Listr is installed on your server (see [below](#options) for configuration options).
+
+* Using your preferred method, deploy/upload the `dist/` folder to your web server.
+* If necessary, rename `config.json-example` to `config.json`.
+* All files you desire publicly accessible should be placed under the `_public` folder (this setting can be changed in the configuration file, see [below](#options)).
+* Naturally, make sure your web server's root directory points to the `dist` folder (or whichever folder name `index.php` is located in).
+* Enjoy stylish, customized, beautiful and simple Bootstrap Listr and please, consider [supporting](#donate) the project!
+
+### Apache
+
+Depending on your Apache's web server settings, you might have to uncomment the `RewriteBase` setting in the `.htaccess` file (maybe add parent folder name after the slash).
+
+### Nginx
+
+Using Nginx server and want to enjoy Bootstrap Listr's features? Here is a location configuration that should get you up and running in no time. Remember Nginx does not support duplicate location settings so if, as per example below, already have a "location /" that contains specific instructions, you must integrate the directive in a way that does not interfere with your current settings. This isn't meant to be a complete nginx compatibility solution but will get Bootstrap Listr running flawlessly AND securely on your server providing you follow Bootstrap Listr's [Deployment](#deployment)  instructions in this document.
+
+```
+
+	location / { # or any other location, depending on your server's root settings.
+		
+		if (!-e $request_filename) {
+			rewrite ^(.+)$ /index.php?path=$1 break;
+		}
+
+		# Your normal location settings here (mendatory fastcgi_params, special nginx instructions etc.)
+
+	}
+
+```
+Make sure you test your new nginx's server configurations before trying to restart the server to avoid any problems. Do so by using the following command;
+```
+nginx -t
+```
+
+If everything checks out, restart the server;
+```
+service nginx restart
+```
+
+Of course and as usual, depending on your user's privileges, you might need to use sudo to run the last commands. Since Nginx does not require `.htaccess` files (see why [here](https://www.nginx.com/resources/wiki/start/topics/examples/likeapache-htaccess/)), they can safely be discarded.
 
 ## Options
 
